@@ -113,5 +113,9 @@ class BaseModel
         $values = "VALUES( " . rtrim($values, ", ") . ")";
         //Nối chuỗi sqlBuilder
         $model->sqlBuilder .= $values;
+
+        $stmt = $model->conn->prepare($model->sqlBuilder);
+        $stmt->execute($data);
+        return $model->conn->lastInsertId();
     }
 }

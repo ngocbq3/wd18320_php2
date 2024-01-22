@@ -10,8 +10,15 @@ use App\Models\ProductModel;
 
 // dd(ProductModel::find(143));
 
-$pro = ProductModel::where("name", "LIKE", "%iphone%")
-    ->andWhere('price', '>', 1000)
-    ->get();
+// $pro = ProductModel::where("name", "LIKE", "%iphone%")
+//     ->andWhere('price', '>', 1000)
+//     ->get();
 
-dd($pro);
+// dd($pro);
+
+$data = [
+    "name" => "Iphone 22",
+    "price" => 2000,
+    "detail" => "1 quả thận"
+];
+ProductModel::insert($data);
