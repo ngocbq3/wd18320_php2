@@ -10,6 +10,8 @@ use App\Models\ProductModel;
 
 // dd(ProductModel::find(143));
 
-$pro = ProductModel::where("name", "LIKE", "%iphone%")->get();
+$pro = ProductModel::where("name", "LIKE", "%iphone%")
+    ->andWhere('price', '>', 1000)
+    ->get();
 
 dd($pro);

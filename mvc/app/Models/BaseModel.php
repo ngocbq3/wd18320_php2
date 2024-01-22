@@ -10,6 +10,8 @@ namespace App\Models;
 
 use PDO;
 
+use function PHPSTORM_META\sql_injection_subst;
+
 /**
  * Đặt tên class theo tên file
  */
@@ -90,5 +92,26 @@ class BaseModel
         $stmt = $this->conn->prepare($this->sqlBuilder);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS);
+    }
+    /**
+     * method insert: dùng để thêm dữ liệu vào bảng
+     * @$data: tham số là 1 mảng gồm có key là tên cột
+     */
+    public static function insert($data)
+    {
+        $model = new static;
+        $model->sqlBuilder = "INSERT INTO $model->tableName( ";
+
+        //Biến $values để lưu trữ tham số value của câu lệnh sqlBuilder
+        $values = "";
+        foreach ($data as $column => $val) {
+            $model->sqlBuilder .= " `{$column}`, ";
+            $values .= " :$column, ";
+        }
+        //Xóa ký tự ", " bên phải chuỗi
+        $model->sqlBuilder = rtrim($model->sqlBuilder, ", ") . ") ";
+        $values = "VALUES( " . rtrim($values, ", ") . ")";
+        //Nối chuỗi sqlBuilder
+        $model->sqlBuilder .= $values;
     }
 }
