@@ -59,4 +59,36 @@ class BaseModel
         }
         return $result;
     }
+
+    /**
+     * Method where: tìm kiếm dữ liệu theo điều kiện, xây dựng câu lệnh SQL
+     * @$column: tên cột làm điều kiện
+     * @$codition: điều kiện =, >, <, ..
+     * @$value: là giá trị của điều kiện
+     */
+    public static function where($column, $codition, $value)
+    {
+        $model = new static;
+        $model->sqlBuilder = "SELECT * FROM $model->tableName WHERE `$column` $codition '$value' ";
+        return $model;
+    }
+    //Method andWhere: dùng để thêm tiếp điều kiện cho câu lệnh sqlBuilder
+    public function andWhere($column, $codition, $value)
+    {
+        $this->sqlBuilder .= " AND `$column` $codition '$value' ";
+        return $this;
+    }
+    //Method orWhere: dùng để thêm tiếp điều kiện cho câu lệnh sqlBuilder
+    public function orWhere($column, $codition, $value)
+    {
+        $this->sqlBuilder .= " OR `$column` $codition '$value' ";
+        return $this;
+    }
+    //Method get: dùng để thực thi câu lệnh điều kiện
+    public function get()
+    {
+        $stmt = $this->conn->prepare($this->sqlBuilder);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS);
+    }
 }
