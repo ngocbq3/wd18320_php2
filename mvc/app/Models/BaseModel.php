@@ -141,4 +141,12 @@ class BaseModel
         $data["$model->primaryKey"] = $id;
         return $stmt->execute($data);
     }
+    //Method delete: để xóa dữ liệu theo id
+    public static function delete($id)
+    {
+        $model = new static;
+        $model->sqlBuilder = "DELETE FROM $model->tableName WHERE `$model->primaryKey`=:$model->primaryKey";
+        $stmt = $model->conn->prepare($model->sqlBuilder);
+        return $stmt->execute(["$model->primaryKey" => $id]);
+    }
 }
