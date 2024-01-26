@@ -32,7 +32,12 @@ class Router
         $path = $_SERVER["REQUEST_URI"];
         //làm gọn đường dẫn
         $path = str_replace(ROOT_URI, "/", $path);
-
+        //Tìm vị trí dấu ? ở trong $path
+        $position = strpos($path, "?");
+        //Loại bỏ tử dấu ? trở đi
+        if ($position) {
+            $path = substr($path, 0, $position);
+        }
         $callback = false;
         //Kiểm tra đường dẫn trên thanh URL xem có được khai báo chưa
         if (isset(static::$routes[$method][$path])) {
@@ -44,6 +49,13 @@ class Router
         }
         if (is_callable($callback)) {
             return $callback();
+        }
+
+        //Kiểm tra $callback có phải mảng không
+        if (is_array($callback)) {
+            //Tạo đối tượng
+            $callback[0] = new $callback[0];
+            return call_user_func($callback);
         }
     }
 }
