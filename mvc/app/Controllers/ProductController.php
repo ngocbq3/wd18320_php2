@@ -11,9 +11,11 @@ class ProductController extends BaseController
     public function index()
     {
         $products = ProductModel::all();
+        //lấy thông tin message
+        $message = $_COOKIE['message'] ?? "";
         return $this->view(
             "admin/products/list",
-            ["products" => $products]
+            ["products" => $products, "message" => $message]
         );
     }
     //Hiển thị form thêm mới SP
@@ -55,5 +57,36 @@ class ProductController extends BaseController
                 'categories' => $categories
             ]
         );
+    }
+    //Phương thức cập nhật dữ liệu
+    public function update()
+    {
+        $data = $_POST;
+        //Xử lý file
+        $file = $_FILES['image'];
+        //Kiểm tra xem có nhập ảnh không
+        if ($file['size'] > 0) {
+            $image = $file['name'];
+            move_uploaded_file($file['tmp_name'], "images/" . $image);
+            //Thêm ảnh vào data
+            $data['image'] = $image;
+        }
+        //Cập nhật dữ liệu
+        ProductModel::update($data['id'], $data);
+        //chuyển hướng website về lại form edit
+        header("location: " . ROOT_PATH . "product/edit?id=" . $data['id']);
+        die;
+    }
+
+    //phương thức xóa dữ liệu
+    public function delete()
+    {
+        $id = $_GET['id'];
+        ProductModel::delete($id);
+        //Thông báo
+        setcookie("message", "Xóa dữ liệu thành công", time() + 2);
+        //chuyển hướng sang list
+        header("location: " . ROOT_PATH . "product/list");
+        die;
     }
 }

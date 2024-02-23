@@ -1,3 +1,6 @@
+<div style="color: green;">
+    <?= $message ?>
+</div>
 <table border="1">
     <tr>
         <th>#ID</th>
